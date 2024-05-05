@@ -1,10 +1,12 @@
 use std::time::Duration;
 
-use bevy::diagnostic::{DiagnosticId, RegisterDiagnostic, Diagnostic, Diagnostics};
+use bevy::diagnostic::{Diagnostic, DiagnosticPath, Diagnostics, RegisterDiagnostic};
 use bevy::ecs::schedule::ScheduleLabel;
 use bevy::prelude::*;
 
-pub const PHYSICS_FPS: DiagnosticId = DiagnosticId::from_u128(168810318229280110473455791631253127370);
+// All diagnostics should have a unique DiagnosticPath. (https://github.com/bevyengine/bevy/blob/main/examples/diagnostics/custom_diagnostic.rs)
+pub const SYSTEM_ITERATION_COUNT: DiagnosticPath = DiagnosticPath::const_new("system_iteration_count");
+
 
 pub const DEFAULT_TIMESTEP: Duration = Duration::from_micros(15625);
 pub const MAX_PHYSICS_EXEC_TIME: Duration = Duration::from_micros(15625);
@@ -21,7 +23,8 @@ impl Plugin for TimePlugin {
             .register_type::<PhysicsTime>()
             .init_resource::<PhysicsTime>()
             .init_resource::<DiagnosticFrameCount>()
-            .register_diagnostic(Diagnostic::new(PHYSICS_FPS, "physics_fps", 10))
+            // Diagnostics must be initialized before measurements can be added.
+            .register_diagnostic(Diagnostic::new(SYSTEM_ITERATION_COUNT).with_suffix(" iterations"))
             .add_systems(PhysicsSchedule, diagnosics_count)
             .add_systems(Update, diagnostics_report)
             .add_systems(PreUpdate, run_physics_schedule);
@@ -172,7 +175,7 @@ fn diagnostics_report(
 ) {
     let delta = time.delta_seconds_f64();
     if delta == 0. { return; }
-    diagnostics.add_measurement(PHYSICS_FPS, || {
+    diagnostics.add_measurement(&SYSTEM_ITERATION_COUNT, || {
         frame_count.0 as f64 / delta
     });
     frame_count.0 = 0;

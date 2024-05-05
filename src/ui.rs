@@ -77,7 +77,7 @@ fn display_custom_window(
     mut time: ResMut<PhysicsTime>,
     mut restart_events: EventWriter<RestartEvent>,
     diagnostics: Res<DiagnosticsStore>,
-    keys: Res<Input<KeyCode>>,
+    keys: Res<ButtonInput<KeyCode>>,
     mut last_fps: Local<f64>,
 ) {
     if !settings.enabled { return; }
@@ -215,7 +215,7 @@ fn display_custom_window(
                     PhysicsTimeMode::OneTick => 0.,
                     PhysicsTimeMode::Running { speed } => {
                         let expected_fps = time.context().timestep.as_secs_f64().recip();
-                        let measured_fps = diagnostics.get(crate::time::PHYSICS_FPS).unwrap().average().unwrap_or_default();
+                        let measured_fps = diagnostics.get(&crate::time::SYSTEM_ITERATION_COUNT).unwrap().average().unwrap_or_default();
                         let speed_factor = speed as f64;
 
                         let actual_fps = last_fps.max(measured_fps);

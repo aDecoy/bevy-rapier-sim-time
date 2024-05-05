@@ -5,6 +5,7 @@ use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_rapier3d::prelude::*;
+
 use time::PhysicsTimeExt;
 
 mod camera;
@@ -73,8 +74,8 @@ fn spawn_scene(
         Collider::cylinder(0.01, 7.0),
     )).with_children(|commands| {
         commands.spawn(PbrBundle {
-            mesh: meshes.add(shape::Circle::new(7.0).into()),
-            material: materials.add(Color::WHITE.into()),
+            mesh: meshes.add(Circle::new(7.0)),
+            material: materials.add(Color::WHITE),
             transform: Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
             ..default()
         });
@@ -123,11 +124,11 @@ fn reset_scene(
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::UVSphere {
+            mesh: meshes.add(Mesh::from(Sphere {
                 radius: 0.5,
                 ..default()
             })),
-            material: materials.add(Color::rgb_u8(124, 144, 255).into()),
+            material: materials.add(Color::rgb_u8(124, 144, 255)),
             transform: Transform::from_xyz(0., 4., 0.),
             ..default()
         },

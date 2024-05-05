@@ -4,7 +4,7 @@
 use std::f32::consts::PI;
 
 use bevy::input::gamepad::GamepadEvent;
-use bevy::input::mouse::{MouseMotion, MouseWheel};
+use bevy::input::mouse::{MouseButtonInput, MouseMotion, MouseWheel};
 use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::EguiContexts;
 
@@ -82,7 +82,7 @@ fn apply_camera_controls(
     mut gamepad_events: EventReader<GamepadEvent>,
     mut gamepad_state: Local<GamepadState>,
     time: Res<Time>,
-    buttons: Res<Input<MouseButton>>,
+    buttons: Res<ButtonInput<MouseButton>>,
     mut egui_contexts: EguiContexts,
     mut camera_query: Query<&mut OrbitCamera>,
 ) {
